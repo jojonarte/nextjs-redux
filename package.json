@@ -3,6 +3,9 @@
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
+  "engines": {
+    "node": "8"
+  },
   "scripts": {
     "now-build": "npm run build",
     "analyze": "cross-env BUNDLE_ANALYZE=true next build ",
@@ -10,19 +13,33 @@
     "env": "node ./bin/env.js",
     "build": "next build ",
     "export": "rm -rf ./out && next export  && mv /out ./out",
-    "start": "cross-env NODE_ENV=production npm run build && cross-env NODE_ENV=production node server.js",
+    "start": "cross-env NODE_ENV=production node server.js",
     "lint": "eslint --quiet 'pages/**/*.js' 'project/**/*.js' 'components/**/*.js' 'tests/**/*.js' 'common/**/*.js'",
     "test:e2e": "cross-env E2E=true next build && cross-env NODE_ENV=production E2E=true nightwatch ./tests/e2e/index.e2e.js -c ./tests/e2e/nightwatch.conf.js",
     "test:unit": "cross-env NODE_ENV=test nyc --reporter=lcov --reporter=text mocha --opts ./tests/mocha.opts",
     "test:unit:watch": "cross-env NODE_ENV=test nyc --reporter=lcov --reporter=text mocha --watch --opts ./tests/mocha.opts \"./common/**/*.test.js\"",
     "test:pact": "cross-env NODE_ENV=pactTest mocha --opts ./tests/mocha.opts \"**/*.pact.js\"",
     "test:pact:server": "cross-env MOCK_SERVER=true node_modules/.bin/nodemon --watch tests --exec node ./tests/pact/helpers/pact.mock-server.js",
-    "test:pact:publish": "node tests/pact/helpers/pact.publish.js"
+    "test:pact:publish": "node tests/pact/helpers/pact.publish.js",
+    "build-all": "npm run clean; npm run build-public; npm run build-firebase; npm run build-next ; npm run build-dist-dependencies",
+    "build-next": "next build \"src/app/\"",
+    "build-public": "cpx public/**/*.* \"dist/public\" -C",
+    "build-firebase": "babel \"src/functions\" --out-dir \"dist/functions\"",
+    "build-storybook": "build-storybook -c .storybook -s ./src/app/public -o build",
+    "build-dist-dependencies": "npm run copy-dist-dependencies; npm run copy-public; cd dist/functions",
+    "clean": "rimraf dist",
+    "copy-dist-dependencies": "cpx \"*{package.json,package-lock.json,yarn.lock, node_modules}\" \"dist/functions\" -C",
+    "copy-public": "cpx \"src/app/public/**/*.*\" \"dist/functions/public\" -C",
+    "predeploy": "npm run build-all",
+    "deploy": "cross-env NODE_ENV=production firebase deploy --only hosting,functions",
+    "preserve": "npm run build-all",
+    "serve": "cross-env NODE_ENV=production firebase serve"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@babel/cli": "^7.8.4",
     "@babel/core": "^7.0.1",
     "@babel/register": "^7.0.0",
     "@next/bundle-analyzer": "9.0.5",
@@ -37,6 +54,7 @@
     "classnames": "2.2.6",
     "colors": "1.3.3",
     "cookie": "0.4.0",
+    "cpx": "^1.5.0",
     "cross-env": "5.2.0",
     "date-fns": "^2.0.1",
     "dotenv": "6.2.0",
@@ -50,6 +68,8 @@
     "eslint-plugin-react": "7.11.1",
     "eslint-watch": "4.0.2",
     "expect": "24.9.0",
+    "firebase-admin": "^8.6.0",
+    "firebase-functions": "^3.3.0",
     "fs-extra": "8.1.0",
     "isomorphic-unfetch": "3.0.0",
     "js-cookie": "2.2.0",
@@ -85,6 +105,7 @@
     "body-parser": "^1.19.0",
     "cors": "^2.8.5",
     "express": "^4.17.1",
-    "nodemon": "^1.19.1"
+    "nodemon": "^1.19.1",
+    "firebase-functions-test": "^0.1.6"
   }
 }

@@ -1,0 +1,6 @@
+runtime: nodejs10
+# # what follows will be optional in the future:
+# service: gae
+# handlers:
+#   - url: /.*
+#     script: auto

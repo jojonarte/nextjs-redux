@@ -6,7 +6,8 @@ const withBundleAnalyzer = require('@next/bundle-analyzer')({
 });
 
 const nextConfig = {
-    target: 'serverless',
+    distDir: '../../dist/functions/next',
+    // target: 'serverless',
     // next-offline options
     workboxOpts: {
         swDest: 'static/service-worker.js',

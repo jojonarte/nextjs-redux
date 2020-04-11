@@ -44,13 +44,13 @@ module.exports = {
         'quote-props': 0,
         'radix': 0,
         'indent': [
-            "error", 4,
+            "error", 2,
             {
                 SwitchCase: 1,
                 ignoredNodes: ['JSXElement', 'JSXElement > *', 'JSXAttribute', 'JSXIdentifier', 'JSXNamespacedName', 'JSXMemberExpression', 'JSXSpreadAttribute', 'JSXExpressionContainer', 'JSXOpeningElement', 'JSXClosingElement', 'JSXText', 'JSXEmptyExpression', 'JSXSpreadChild'],
             },
         ],
-        'react/jsx-indent': ["error", 4],
+        'react/jsx-indent': ["error", 2],
         'react/jsx-indent-props': ["error", 2],
         'react/jsx-max-props-per-line': [1,
             {
